@@ -9,6 +9,11 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRuntimeException(RuntimeException exception){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+
+    }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<String> handleValidationException(ConstraintViolationException ex) {

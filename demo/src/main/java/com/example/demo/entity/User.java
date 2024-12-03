@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -10,15 +11,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @NotNull
+    private int id;
+    @NotNull(message = "First name is required")
     @Length(max = 50)
     @Column(name = "first_name")
     private String firstName;
-    @NotNull
+
     @Length(max = 50)
     @Column(name = "last_name")
     private String lastName;
+
     @NotNull
     @Length(max = 100)
     private String timeZone;
@@ -36,11 +38,11 @@ public class User {
     }
 
     // Getters and Setters
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

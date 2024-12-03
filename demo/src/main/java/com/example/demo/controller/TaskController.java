@@ -5,8 +5,10 @@ import com.example.demo.entity.User;
 import com.example.demo.service.TaskService;
 import com.example.demo.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,8 +33,8 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@Valid @RequestBody Task task) {
-
+    public ResponseEntity<Task> createTask(@Valid @RequestBody Task task,BindingResult bindingResult) {
+       if(bindingResult.hasErrors()) throw new IllegalArgumentException(bindingResult.getFieldError().getDefaultMessage());
         taskService.save(task);
         return ResponseEntity.ok(task);
     }
@@ -44,7 +46,8 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable int id, @Valid @RequestBody Task task) {
+    public ResponseEntity<Task> updateTask(@PathVariable int id, @Valid @RequestBody Task task,BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) throw new RuntimeException(bindingResult.getFieldError().getDefaultMessage());
         Task updatedTask = taskService.update(id, task);
         return ResponseEntity.ok(updatedTask);
     }

@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +26,10 @@ public class UserController {
         return userService.findAll();
     }
     @PostMapping
-    public ResponseEntity<User> addUser(@Valid @RequestBody User user){
+    public ResponseEntity<User> addUser(@Valid @RequestBody User user,BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            throw new RuntimeException("invalid input given in "+bindingResult.getObjectName());
+        }
         userService.save(user);
         return ResponseEntity.ok(user);
     }
@@ -35,7 +39,8 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable(name = "id")int id, @Valid @RequestBody User user){
+    public ResponseEntity<User> updateUser(@PathVariable(name = "id")int id, @Valid @RequestBody User user,BindingResult bindingResult){
+        if(bindingResult.hasErrors()) throw new RuntimeException("given user has error");
         User updatedUser=userService.update(id,user);
         return ResponseEntity.ok(updatedUser);
     }

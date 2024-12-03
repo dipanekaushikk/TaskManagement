@@ -56,6 +56,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void save(Task task) {
+        User result=userService.findById(task.getAssignedTo().getId());
+        if(result.getIsActive()==false) throw new RuntimeException("user is inactive");
         validateTask(task);
         taskRepository.save(task);
     }
@@ -80,13 +82,15 @@ public class TaskServiceImpl implements TaskService {
         if (result.isEmpty()) {
             throw new RuntimeException("Task not found with id - " + theId);
         }
-
+        User result1=userService.findById(task.getAssignedTo().getId());
+        if(result1.getIsActive()==false) throw new RuntimeException("user is inactive");
         validateTask(task);
 
         Task existingTask = result.get();
         existingTask.setTitle(task.getTitle());
         existingTask.setDescription(task.getDescription());
         existingTask.setStatus(task.getStatus());
+        existingTask.setAssignedTo(result1);
         return taskRepository.save(existingTask);
     }
 
